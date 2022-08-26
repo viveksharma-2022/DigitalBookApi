@@ -9,6 +9,7 @@ namespace CommonDbLayer.DatabaseEntity
     {
         public MyDigitalBookDbContext()
         {
+
         }
 
         public MyDigitalBookDbContext(DbContextOptions<MyDigitalBookDbContext> options)
