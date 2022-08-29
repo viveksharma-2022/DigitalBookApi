@@ -14,6 +14,6 @@ namespace PaymentFunction
         public long? BookId { get; set; }
         public string Title { get; set; }
         public decimal? Price { get; set; }
-        public DateTime? PaymentDate { get; set; }
+        public string? PaymentDate { get; set; }
     }
 }

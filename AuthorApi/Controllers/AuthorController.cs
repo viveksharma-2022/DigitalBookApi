@@ -80,6 +80,11 @@ namespace AuthorApi.Controllers
             }
         }
 
+        /// <summary>
+        /// This method is used to get books by bookid
+        /// </summary>
+        /// <param name="bookid"></param>
+        /// <returns>List of books</returns>
         [HttpPost]
         public ActionResult GetBookById([FromBody] long bookid)
         {
@@ -117,7 +122,6 @@ namespace AuthorApi.Controllers
             }
             catch (Exception ex)
             {
-
                 return Ok(ex);
             }
 
@@ -143,6 +147,45 @@ namespace AuthorApi.Controllers
                 return Ok(ex);
             }
         }
-        
+        /// <summary>
+        /// Method used to unblock book
+        /// </summary>
+        /// <param name="book"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Authorize]
+        public ActionResult BlockBook([FromBody] Book book)
+        {
+            try
+            {
+                string result = _bookService.BlockaBook(book);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+
+                return Ok(ex);
+            }
+        }
+        /// <summary>
+        /// Method used to block book
+        /// </summary>
+        /// <param name="book"></param>
+        /// <returns></returns>
+        [HttpPut]
+        [Authorize]
+        public ActionResult UnblockBook([FromBody] Book book)
+        {
+            try
+            {
+                string result = _bookService.UnBlockaBook(book);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+
+                return Ok(ex);
+            }
+        }
     }
 }

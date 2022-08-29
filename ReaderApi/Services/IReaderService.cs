@@ -6,5 +6,6 @@ namespace ReaderApi.Services
     {
         Book GetBookfromId(long id);
         IEnumerable<Book> SearchBookByCategory(string? authorName, string? category, int? price);
+        string GetRefund(long paymentId);
     }
 }

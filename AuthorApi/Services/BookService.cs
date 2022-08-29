@@ -95,14 +95,15 @@ namespace AuthorApi.Services
                 return ex.Message;
             }
         }
-        public string BlockaBook(int id)
+        public string BlockaBook(Book book)
         {
-            Book blockbook = new Book();
-            blockbook=_dbContext.Books.Where(x=>x.BookId==id).FirstOrDefault();
-            if (blockbook !=null)
+            
+            var bookdata = _dbContext.Books.FirstOrDefault(x=>x.BookId==book.BookId);
+            
+            if (bookdata != null)
             {
-                blockbook.Active = false;
-                _dbContext.Books.Update(blockbook);
+                bookdata.Active = false;
+                _dbContext.Books.Update(bookdata);
                 _dbContext.SaveChanges();
                 return $"Book has been blocked successfully";
             }
@@ -111,10 +112,10 @@ namespace AuthorApi.Services
                 return $"Book doesn't exist";
             }
         }
-        public string UnBlockaBook(int id)
+        public string UnBlockaBook(Book book)
         {
             Book unblockbook = new Book();
-            unblockbook = _dbContext.Books.Where(x=>x.BookId==id).FirstOrDefault();
+            unblockbook = _dbContext.Books.Where(x=>x.BookId==book.BookId).FirstOrDefault();
             if (unblockbook != null)
             {
                 unblockbook.Active = true;

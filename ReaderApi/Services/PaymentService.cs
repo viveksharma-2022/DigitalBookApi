@@ -39,19 +39,29 @@ namespace ReaderApi.Services
 
         public string BuyBook(Payment payment)
         {
-            if (payment.BuyerName != null && payment.BuyerEmailId != null)
+            try
             {
-                _dbContext.Payments.Add(payment);
-                _dbContext.SaveChanges();
-                return $"Book Bought successfully";               
+                if (payment.BuyerName != null && payment.BuyerEmailId != null)
+                {
+                    Payment bookdata = new Payment();
+                    bookdata.Title = payment.Title;
+                    bookdata.BuyerName=payment.BuyerName;
+                    bookdata.BuyerEmailId=payment.BuyerEmailId;
+                    bookdata.PaymentDate = payment.PaymentDate;
+                    _dbContext.Payments.Add(bookdata);
+                    _dbContext.SaveChanges();
+                    return $"Book Bought successfully";                                             
+                    }
+                else
+                {
+                    return "Email id or name is not entered";
+                }
+            }
+            catch (Exception ex)
+            {
 
-            }
-            else
-            {
-                return "EmailId is incorrect";
-            }
+                return (ex.Message);
+            }                        
         }
-
-
     }
 }

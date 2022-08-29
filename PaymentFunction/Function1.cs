@@ -7,29 +7,41 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Microsoft.Data.SqlClient;
 
 namespace PaymentFunction
 {
     public static class Function1
     {
-        [FunctionName("Function1")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "PurchaseBook")] HttpRequest req,
+        [FunctionName("CreatePayment")]
+        public static async Task<IActionResult> CreatePayment(
+            [HttpTrigger(AuthorizationLevel.Anonymous, "post", Route = "purchasebook")] HttpRequest req,
             ILogger log)
         {
-            log.LogInformation("C# HTTP trigger function processed a request.");
-
-            string name = req.Query["name"];
 
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            dynamic data = JsonConvert.DeserializeObject(requestBody);
-            name = name ?? data?.name;
+            var input = JsonConvert.DeserializeObject<PaymentModel>(requestBody);
+            try
+            {
+                using (SqlConnection connection = new SqlConnection("Server=tcp:digitalbookserver.database.windows.net,1433;Initial Catalog=MyDigitalBookdb;Persist Security Info=False;User ID=vivek;Password=pass@word1;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"))
+                {
+                    connection.Open();
+                    if (!String.IsNullOrEmpty(input.BuyerEmailId) && !string.IsNullOrEmpty(input.BuyerName))
+                    {
 
-            string responseMessage = string.IsNullOrEmpty(name)
-                ? "This HTTP triggered function executed successfully. Pass a name in the query string or in the request body for a personalized response."
-                : $"Hello, {name}. This HTTP triggered function executed successfully.";
-
-            return new OkObjectResult(responseMessage);
+                        //var dt= input.PaymentDate.ToString("yyyy-MM-dd HH:mm:ss");
+                        var query = $"INSERT INTO [Payment] (BuyerEmailId, BuyerName, BookId, Title,Price,PaymentDate) VALUES('{input.BuyerEmailId}', '{input.BuyerName}' , '{input.BookId}', '{input.Title}', '{input.Price}', '{input.PaymentDate}')";
+                        SqlCommand command = new SqlCommand(query, connection);
+                        command.ExecuteNonQuery();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                log.LogError(e.ToString());
+                return new BadRequestResult();
+            }
+            return new OkResult();
         }
     }
 }

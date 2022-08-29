@@ -35,18 +35,42 @@ namespace ReaderApi.Services
             }
             if (!string.IsNullOrWhiteSpace(category))
             {
-                books=request.Where(x => x.Category == category).ToList();
+                books = request.Where(x => x.Category == category).ToList();
 
             }
-            if(price!=null && price != 0)
+            if (price != null && price != 0)
             {
-                books=books.Where(x => x.Price == price).ToList();
+                books = request.Where(x => x.Price == price).ToList();
             }
             if (books == null)
             {
                 books = request;
             }
             return books.ToList();
+        }
+
+        public string GetRefund(long paymentId)
+        {
+            try
+            {
+                Payment payment = _dbContext.Payments.FirstOrDefault(x=>x.PaymentId==paymentId);
+                if (payment != null)
+                {
+                    _dbContext.Payments.Remove(payment);
+                    _dbContext.SaveChanges();
+                    return ("Book has been deleted successfully");
+                }
+                else
+                {
+                    return $"No Found";
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }            
+
         }
     }
 }

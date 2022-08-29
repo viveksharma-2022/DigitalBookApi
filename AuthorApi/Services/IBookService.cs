@@ -8,7 +8,7 @@ namespace AuthorApi.Services
         List<Book> GetAllBooks();
         string UpdateBooks(Book book);
         List<Book> GetPurchasedbookbyId(long id);
-        string BlockaBook(int id);
-        string UnBlockaBook(int id);
+        string BlockaBook(Book book);
+        string UnBlockaBook(Book book);
     }
 }
